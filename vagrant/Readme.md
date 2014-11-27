@@ -8,15 +8,18 @@ Download and install the box
 
 install vagrant from http://docs.vagrantup.com/v2/installation/index.html
 
-run:
-	git clone https://github.com/web-traffic-simulator/web-traffic-simulator.git
-	
-run: 
-	cd web-traffic-simulator/vagrant
-	
-run: 
-	vagrant up
+run in sequence:
+```
+ git clone https://github.com/web-traffic-simulator/web-traffic-simulator.git
+```
 
+```
+ cd web-traffic-simulator/vagrant
+```
+
+```
+ vagrant up
+```
 #About
 
 This box will install and configure the following:
