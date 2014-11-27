@@ -1,3 +1,4 @@
 jdk:
   - oraclejdk8
-script: gradle wrapper && ./gradlew build
+gradle wrapper
+./gradlew build
