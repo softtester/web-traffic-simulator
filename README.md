@@ -5,13 +5,12 @@ web-traffic-simulator
 Test framework to simulate traffic on a homepage and collect log data.
 
 #Install
-```
 
 We use vagrant to setup our development environment.
-More info about this can be found in /vagrant in this repository.
+More info about this can be found in he directory /vagrant in this repository.
 
 When you have setup the development environment and cloned this repository you build the project by:
-
+```
 gradle wrapper
 gradlew build
 ```

@@ -1,6 +1,8 @@
-A Lubuntu based vagrant box provisioned with the cordova development environment for the android platform. All you have to do is to clone the repository, fire vagrant up. After that you are ready to begin developing to the awesome web-traffic-simulator.
+Development environment
+=====================
+A Lubuntu based vagrant box provisioned with the development environment for web-traffic-simulator. All you have to do is to clone the repository, fire vagrant up. After that you are ready to begin developing to the awesome web-traffic-simulator.
 
-Installation
+#Installation
 
 Download and install the box
 
@@ -9,7 +11,7 @@ run git clone https://github.com/web-traffic-simulator/web-traffic-simulator.git
 run cd web-traffic-simulator/vagrant
 run vagrant up
 
-About
+#About
 
 This box will install and configure the following:
 
