@@ -1,4 +1,4 @@
-![Jenkins](https://travis-ci.org/web-traffic-simulator/web-traffic-simulator.svg)
+[![Jenkins](https://travis-ci.org/web-traffic-simulator/web-traffic-simulator.svg)](https://travis-ci.org/web-traffic-simulator/web-traffic-simulator)
 
 web-traffic-simulator
 =====================
