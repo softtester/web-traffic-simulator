@@ -1,3 +1,5 @@
+![Jenkins](https://travis-ci.org/web-traffic-simulator/web-traffic-simulator.svg)
+
 web-traffic-simulator
 =====================
 Test framework to simulate traffic on a homepage and collect log data.
