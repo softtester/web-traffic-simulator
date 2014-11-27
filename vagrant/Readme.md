@@ -6,10 +6,16 @@ A Lubuntu based vagrant box provisioned with the development environment for web
 
 Download and install the box
 
-install vagrant http://docs.vagrantup.com/v2/installation/index.html
-run git clone https://github.com/web-traffic-simulator/web-traffic-simulator.git
-run cd web-traffic-simulator/vagrant
-run vagrant up
+install vagrant from http://docs.vagrantup.com/v2/installation/index.html
+
+run:
+	git clone https://github.com/web-traffic-simulator/web-traffic-simulator.git
+	
+run: 
+	cd web-traffic-simulator/vagrant
+	
+run: 
+	vagrant up
 
 #About
 
