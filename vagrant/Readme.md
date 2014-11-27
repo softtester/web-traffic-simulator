@@ -25,9 +25,15 @@ run in sequence:
 This box will install and configure the following:
 
 Vim
+
 Git
+
 Java 8 SDK
+
 chromium
+
 Gradle
+
 Eclipse
+
 Gradle eclipse plugin
