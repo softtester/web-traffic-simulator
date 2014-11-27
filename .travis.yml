@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - oraclejdk8
-gradle wrapper
-script: ./gradlew build
-
+- oraclejdk8
+install: gradle wrapper
+script: ./gradlew clean build
