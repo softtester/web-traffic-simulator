@@ -16,6 +16,7 @@ public class WebTrafficSimulator {
 	}
 
 	public static void main(String args[]) {
+		System.out.println("Starting crawler");
 		loadSettings(args);
 	}
 }
