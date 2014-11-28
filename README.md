@@ -7,7 +7,7 @@ Test framework to simulate traffic on a homepage and collect log data.
 #Install
 
 We use vagrant to setup our development environment.
-More info about this can be found in he directory /vagrant in this repository.
+More info about this can be found in the dev-env repository (https://github.com/web-traffic-simulator/dev-env).
 
 When you have setup the development environment and cloned this repository you build the project by:
 ```
