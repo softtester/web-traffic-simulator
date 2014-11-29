@@ -1,5 +1,7 @@
 package se.softhouse.webtrafficsimulator.data;
 
+import static com.google.common.base.MoreObjects.toStringHelper;
+
 public class Settings {
 
 	public static Settings settings() {
@@ -13,6 +15,11 @@ public class Settings {
 
 	public String getUrl() {
 		return url;
+	}
+
+	@Override
+	public String toString() {
+		return toStringHelper(this).omitNullValues().toString();
 	}
 
 	public Settings withUrl(String urlValue) {
