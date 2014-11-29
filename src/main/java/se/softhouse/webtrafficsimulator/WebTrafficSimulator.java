@@ -39,6 +39,7 @@ public class WebTrafficSimulator {
 		final BrowserThreadPool browserThreadPool = new BrowserThreadPool();
 		browserThreadPool.addBrowser(new BrowserThread(webDriver).withState(browserState().withUrl(settings.getUrl())));
 		browserThreadPool.startAll();
+		Thread.sleep(10000);
 		browserThreadPool.stopAll();
 	}
 }
