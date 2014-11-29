@@ -9,14 +9,17 @@ import java.util.concurrent.Callable;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import se.softhouse.webtrafficsimulator.data.Settings;
 
 public class BrowserThread implements Callable<Boolean> {
-
 	public static BrowserThread browserThread() {
 		return new BrowserThread();
 	}
+
+	private final Logger logger = LoggerFactory.getLogger(BrowserThread.class);
 
 	private Settings settings;
 	private BrowserState state;
@@ -27,14 +30,14 @@ public class BrowserThread implements Callable<Boolean> {
 
 	@Override
 	public Boolean call() throws Exception {
-		System.out.println(currentThread().getName() + " " + this + " Started");
+		logger.info(currentThread().getName() + " " + this + " Started");
 		webDriver.get(state.getUrl());
 		try {
 			while (state.isStarted()) {
 				state.setExecuting(true);
 				try {
-					System.out.println(currentThread().getName() + " " + this + " is at " + webDriver.getCurrentUrl()
-							+ " " + webDriver.getTitle());
+					logger.info(currentThread().getName() + " " + this + " is at " + webDriver.getCurrentUrl() + " "
+							+ webDriver.getTitle());
 					final List<WebElement> aElements = webDriver.findElements(tagName("a"));
 					for (final WebElement aElement : aElements) {
 						aElement.getAttribute("href");
@@ -47,7 +50,7 @@ public class BrowserThread implements Callable<Boolean> {
 			}
 		} finally {
 			webDriver.quit();
-			System.out.println(currentThread().getName() + " " + this + " Stopped");
+			logger.info(currentThread().getName() + " " + this + " Stopped");
 		}
 		state.setExecuting(false);
 		return true;
@@ -62,13 +65,13 @@ public class BrowserThread implements Callable<Boolean> {
 	}
 
 	public BrowserThread start() {
-		System.out.println(this + " Starting");
+		logger.info(this + " Starting");
 		state.setStarted(true);
 		return this;
 	}
 
 	public BrowserThread stop() {
-		System.out.println(this + " Stopping");
+		logger.info(this + " Stopping");
 		state.setStarted(false);
 		return this;
 	}

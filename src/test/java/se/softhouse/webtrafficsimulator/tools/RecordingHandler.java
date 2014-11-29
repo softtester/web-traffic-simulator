@@ -11,8 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RecordingHandler extends AbstractHandler {
+	private final Logger logger = LoggerFactory.getLogger(RecordingHandler.class);
+
 	private final List<String> requestedUrls = newArrayList();
 
 	public List<String> getRequestedUrls() {
@@ -27,6 +31,6 @@ public class RecordingHandler extends AbstractHandler {
 		response.setStatus(HttpServletResponse.SC_OK);
 		baseRequest.setHandled(true);
 		response.getWriter().println("Recorded");
-		System.out.println(this.getClass().getName() + " " + target);
+		logger.info("Responded to " + target);
 	}
 }

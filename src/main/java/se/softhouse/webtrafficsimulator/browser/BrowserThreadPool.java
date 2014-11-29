@@ -7,8 +7,13 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class BrowserThreadPool {
 	private ExecutorService executor;
+
+	private final Logger logger = LoggerFactory.getLogger(BrowserThreadPool.class);
 
 	private final List<BrowserThread> threads = newArrayList();
 
@@ -43,7 +48,7 @@ public class BrowserThreadPool {
 					executing++;
 				}
 			}
-			System.out.println(executing + " of " + threads.size() + " threads are executing");
+			logger.info(executing + " of " + threads.size() + " threads are executing");
 			if (executing == threads.size()) {
 				return;
 			}
