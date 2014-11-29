@@ -22,8 +22,13 @@ public class WebTrafficSimulator {
 		final Argument<String> url = stringArgument("-url").build();
 		final Argument<String> browser = stringArgument("-browser").defaultValue("HtmlUnit").build();
 		final Argument<Integer> threads = integerArgument("-threads").defaultValue(1).build();
-		final ParsedArguments parsed = withArguments(url, browser, threads).parse(args);
-		return settings().withUrl(parsed.get(url)).withBrowser(parsed.get(browser)).withThreads(parsed.get(threads));
+		final Argument<Integer> sleepBetweenPages = integerArgument("-sleepBetweenPages").defaultValue(500).build();
+		final ParsedArguments parsed = withArguments(url, browser, threads, sleepBetweenPages).parse(args);
+		return settings() //
+				.withUrl(parsed.get(url)) //
+				.withBrowser(parsed.get(browser)) //
+				.withThreads(parsed.get(threads)) //
+				.withSleepBetweenPages(parsed.get(sleepBetweenPages));
 	}
 
 	public static void main(String args[]) throws InterruptedException, MalformedURLException {
@@ -37,8 +42,13 @@ public class WebTrafficSimulator {
 			throw new RuntimeException("No browser specified! Use -browser parameter.");
 		}
 		final BrowserThreadPool browserThreadPool = new BrowserThreadPool();
-		browserThreadPool.withThreads(settings.getThreads()).addBrowser(
-				browserThread().withWebDriver(webDriver).withState(browserState().withUrl(settings.getUrl())));
+		browserThreadPool //
+				.withThreads(settings.getThreads()) //
+				.addBrowser(browserThread() //
+						.withWebDriver(webDriver) //
+						.withSettings(settings) //
+						.withState(browserState() //
+								.withUrl(settings.getUrl())));
 		browserThreadPool.startAll();
 		browserThreadPool.waitForThreadsToStart();
 		browserThreadPool.stopAll();

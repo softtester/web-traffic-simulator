@@ -7,6 +7,7 @@ public class Settings {
 	}
 
 	private String browser;
+	private Integer sleepBetweenPages;
 	private Integer threads;
 	private String url;
 
@@ -15,6 +16,10 @@ public class Settings {
 
 	public String getBrowser() {
 		return browser;
+	}
+
+	public Integer getSleepBetweenPages() {
+		return sleepBetweenPages;
 	}
 
 	public Integer getThreads() {
@@ -36,13 +41,18 @@ public class Settings {
 		return this;
 	}
 
+	public Settings withSleepBetweenPages(Integer ms) {
+		this.sleepBetweenPages = ms;
+		return this;
+	}
+
 	public Settings withThreads(Integer threads) {
 		this.threads = threads;
 		return this;
 	}
 
-	public Settings withUrl(String urlValue) {
-		this.url = urlValue;
+	public Settings withUrl(String url) {
+		this.url = url;
 		return this;
 	}
 }

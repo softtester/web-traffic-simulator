@@ -36,7 +36,6 @@ public class BrowserThreadPool {
 	}
 
 	public void waitForThreadsToStart() {
-		System.out.println();
 		while (true) {
 			int executing = 0;
 			for (final BrowserThread thread : threads) {
@@ -44,12 +43,12 @@ public class BrowserThreadPool {
 					executing++;
 				}
 			}
-			System.out.println(executing + " of " + threads.size() + " executing");
+			System.out.println(executing + " of " + threads.size() + " threads are executing");
 			if (executing == threads.size()) {
 				return;
 			}
 			try {
-				sleep(100);
+				sleep(500);
 			} catch (final InterruptedException e) {
 			}
 		}

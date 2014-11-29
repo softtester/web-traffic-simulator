@@ -1,6 +1,7 @@
 package se.softhouse.webtrafficsimulator.browser;
 
 import static java.lang.Thread.currentThread;
+import static java.lang.Thread.sleep;
 import static org.openqa.selenium.By.tagName;
 
 import java.util.List;
@@ -9,12 +10,15 @@ import java.util.concurrent.Callable;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import se.softhouse.webtrafficsimulator.data.Settings;
+
 public class BrowserThread implements Callable<Boolean> {
 
 	public static BrowserThread browserThread() {
 		return new BrowserThread();
 	}
 
+	private Settings settings;
 	private BrowserState state;
 	private WebDriver webDriver;
 
@@ -39,6 +43,7 @@ public class BrowserThread implements Callable<Boolean> {
 					state.setStarted(false);
 					e.printStackTrace();
 				}
+				sleep(settings.getSleepBetweenPages());
 			}
 		} finally {
 			webDriver.quit();
@@ -71,6 +76,11 @@ public class BrowserThread implements Callable<Boolean> {
 	@Override
 	public String toString() {
 		return this.webDriver.getClass().getSimpleName() + " " + state.getUrl();
+	}
+
+	public BrowserThread withSettings(Settings settings) {
+		this.settings = settings;
+		return this;
 	}
 
 	public BrowserThread withState(BrowserState state) {
