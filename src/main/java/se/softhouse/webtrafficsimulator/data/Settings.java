@@ -1,7 +1,5 @@
 package se.softhouse.webtrafficsimulator.data;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-
 public class Settings {
 
 	public static Settings settings() {
@@ -9,6 +7,7 @@ public class Settings {
 	}
 
 	private String browser;
+	private Integer threads;
 	private String url;
 
 	private Settings() {
@@ -18,17 +17,27 @@ public class Settings {
 		return browser;
 	}
 
+	public Integer getThreads() {
+		return threads;
+	}
+
 	public String getUrl() {
 		return url;
 	}
 
 	@Override
 	public String toString() {
-		return toStringHelper(this).omitNullValues().toString();
+		return "Browser: " + browser + "\n" //
+				+ "Url: " + url + "\n";
 	}
 
 	public Settings withBrowser(String browser) {
 		this.browser = browser;
+		return this;
+	}
+
+	public Settings withThreads(Integer threads) {
+		this.threads = threads;
 		return this;
 	}
 
