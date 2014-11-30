@@ -27,6 +27,17 @@ public class WebTrafficSimulatorTest {
 	@Before
 	public void before() throws Exception {
 		recordingServer = new RecordingServer();
+		recordingServer.withPage("/");
+	}
+
+	@Test
+	public void testThatALinkCanBeRandomlyClicked() throws Exception {
+		recordingServer.withPage("/").havingLinksTo("/target1", "/target2");
+		recordingServer.withPage("/target1").havingLinksTo("/", "/target2");
+		recordingServer.withPage("/target2").havingLinksTo("/", "/target1");
+		final String[] args = { "-url", recordingServer.getBaseUrl(), "-testMode", "true" };
+		WebTrafficSimulator.main(args);
+		// TODO: Implement crawler and test it here!
 	}
 
 	@Test

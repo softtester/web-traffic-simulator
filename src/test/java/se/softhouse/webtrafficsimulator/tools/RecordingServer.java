@@ -31,4 +31,8 @@ public class RecordingServer {
 	public void stop() throws Exception {
 		server.stop();
 	}
+
+	public RecordingServerWebPage withPage(String path) {
+		return recordingHandler.withPage(path);
+	}
 }
