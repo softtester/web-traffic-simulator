@@ -1,23 +1,27 @@
 package se.softhouse.webtrafficsimulator.tools;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.List;
+import java.util.Map;
 
 public class Recordings {
 	private String browserInstance;
-	private final List<String> targets = newArrayList();
+	private final Map<String, Integer> targets = newHashMap();
 
 	public String getBrowserInstance() {
 		return browserInstance;
 	}
 
-	public List<String> getTargets() {
+	public Map<String, Integer> getTargets() {
 		return targets;
 	}
 
 	public void recordRequest(String target) {
-		targets.add(target);
+		if (!targets.containsKey(target)) {
+			targets.put(target, 1);
+		} else {
+			targets.put(target, targets.get(target) + 1);
+		}
 	}
 
 	public void setBrowserInstance(String browserInstance) {

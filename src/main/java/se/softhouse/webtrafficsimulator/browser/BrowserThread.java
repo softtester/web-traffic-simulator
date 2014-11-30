@@ -3,6 +3,7 @@ package se.softhouse.webtrafficsimulator.browser;
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static org.openqa.selenium.By.tagName;
+import static se.softhouse.webtrafficsimulator.RandomUtil.random;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,6 +28,7 @@ public class BrowserThread implements Callable<Boolean> {
 
 	private Settings settings;
 	private BrowserState state;
+
 	private WebDriver webDriver;
 
 	private BrowserThread() {
@@ -61,9 +63,14 @@ public class BrowserThread implements Callable<Boolean> {
 					logger.info(currentThread().getName() + " " + this + " is at " + webDriver.getCurrentUrl() + " "
 							+ webDriver.getTitle());
 					final List<WebElement> aElements = webDriver.findElements(tagName("a"));
-					for (final WebElement aElement : aElements) {
-						aElement.getAttribute("href");
+					if (aElements.isEmpty()) {
+						continue;
 					}
+					final int toClick = random(aElements.size());
+					if (!state.isStarted()) {
+						break;
+					}
+					aElements.get(toClick).click();
 				} catch (final Exception e) {
 					state.setStarted(false);
 					e.printStackTrace();

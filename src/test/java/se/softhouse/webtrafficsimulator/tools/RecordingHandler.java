@@ -32,10 +32,10 @@ public class RecordingHandler extends AbstractHandler {
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		final String threadName = request.getParameter(THREAD_NAME);
+		String threadName = request.getParameter(THREAD_NAME);
 		final String browserInstance = request.getParameter(BROWSER_INSTANCE);
 		if (threadName == null) {
-			throw new RuntimeException(THREAD_NAME + " was null, use -testMode true in test cases!");
+			threadName = "Unknown";
 		}
 		if (!recordings.containsKey(threadName)) {
 			recordings.put(threadName, new Recordings());

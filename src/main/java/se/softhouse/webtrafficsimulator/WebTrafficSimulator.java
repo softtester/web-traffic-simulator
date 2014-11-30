@@ -1,6 +1,7 @@
 package se.softhouse.webtrafficsimulator;
 
 import static java.lang.Boolean.FALSE;
+import static java.lang.Runtime.getRuntime;
 import static se.softhouse.jargo.Arguments.booleanArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
@@ -24,8 +25,9 @@ import se.softhouse.webtrafficsimulator.browser.BrowserThreadPool;
 import se.softhouse.webtrafficsimulator.data.Settings;
 
 public class WebTrafficSimulator {
-	private static final String BROWSER_CHROME = "Chrome";
-	private static final String BROWSER_HTMLUNIT = "HtmlUnit";
+	static final String BROWSER_CHROME = "Chrome";
+	static final String BROWSER_HTMLUNIT = "HtmlUnit";
+	private static BrowserThreadPool browserThreadPool;
 	private static Logger logger = LoggerFactory.getLogger(WebTrafficSimulator.class);
 	private static final String PARAM_BROWSER = "-browser";
 
@@ -37,6 +39,10 @@ public class WebTrafficSimulator {
 			return new ChromeDriver();
 		}
 		throw new RuntimeException("No browser specified! Use " + PARAM_BROWSER + " parameter.");
+	}
+
+	static BrowserThreadPool getBrowserThreadPool() {
+		return browserThreadPool;
 	}
 
 	static Settings loadSettings(String[] args) {
@@ -57,7 +63,7 @@ public class WebTrafficSimulator {
 	public static void main(String args[]) throws InterruptedException, MalformedURLException {
 		final Settings settings = loadSettings(args);
 		logger.info("Starting crawler with settings:\n" + settings);
-		BrowserThreadPool browserThreadPool = browserThreadPool() //
+		browserThreadPool = browserThreadPool() //
 				.withThreads(settings.getThreads());
 		for (int i = 0; i < settings.getThreads(); i++) {
 			browserThreadPool = browserThreadPool.addBrowser(browserThread() //
@@ -66,8 +72,20 @@ public class WebTrafficSimulator {
 					.withState(browserState() //
 							.withUrl(settings.getUrl())));
 		}
+		setupShutDownHook();
 		browserThreadPool.startAll();
-		browserThreadPool.waitForThreadsToStart();
+	}
+
+	private static void setupShutDownHook() {
+		getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				shutdown();
+			}
+		});
+	}
+
+	static void shutdown() {
 		browserThreadPool.stopAll();
 	}
 }
