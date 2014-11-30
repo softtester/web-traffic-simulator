@@ -27,26 +27,21 @@ public class WebTrafficSimulator {
 	private static final String BROWSER_CHROME = "Chrome";
 	private static final String BROWSER_HTMLUNIT = "HtmlUnit";
 	private static Logger logger = LoggerFactory.getLogger(WebTrafficSimulator.class);
+	private static final String PARAM_BROWSER = "-browser";
 
 	private static WebDriver getBrowser(final Settings settings) {
-		WebDriver webDriver = null;
 		switch (settings.getBrowser()) {
 		case BROWSER_HTMLUNIT:
-			webDriver = new HtmlUnitDriver();
-			break;
+			return new HtmlUnitDriver();
 		case BROWSER_CHROME:
-			webDriver = new ChromeDriver();
-			break;
+			return new ChromeDriver();
 		}
-		if (webDriver == null) {
-			throw new RuntimeException("No browser specified! Use -browser parameter.");
-		}
-		return webDriver;
+		throw new RuntimeException("No browser specified! Use " + PARAM_BROWSER + " parameter.");
 	}
 
 	static Settings loadSettings(String[] args) {
 		final Argument<String> url = stringArgument("-url").required().build();
-		final Argument<String> browser = stringArgument("-browser").defaultValue(BROWSER_HTMLUNIT).build();
+		final Argument<String> browser = stringArgument(PARAM_BROWSER).defaultValue(BROWSER_HTMLUNIT).build();
 		final Argument<Integer> threads = integerArgument("-threads").defaultValue(1).build();
 		final Argument<Integer> sleepBetweenPages = integerArgument("-sleepBetweenPages").defaultValue(500).build();
 		final Argument<Boolean> testMode = booleanArgument("-testMode").defaultValue(FALSE).hideFromUsage().build();
