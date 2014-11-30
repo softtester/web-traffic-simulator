@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
 public class RecordingHandler extends AbstractHandler {
 	private final Logger logger = LoggerFactory.getLogger(RecordingHandler.class);
 
-	private final Map<String, Recordings> recordings = newHashMap();
+	private final Map<String, Recordings> recordedClients = newHashMap();
 
 	private final Map<String, RecordingServerWebPage> webPages = newHashMap();
 
-	public Map<String, Recordings> getRecordings() {
-		return recordings;
+	public Map<String, Recordings> getRecordedClients() {
+		return recordedClients;
 	}
 
 	@Override
@@ -37,11 +37,11 @@ public class RecordingHandler extends AbstractHandler {
 		if (threadName == null) {
 			threadName = "Unknown";
 		}
-		if (!recordings.containsKey(threadName)) {
-			recordings.put(threadName, new Recordings());
+		if (!recordedClients.containsKey(threadName)) {
+			recordedClients.put(threadName, new Recordings());
 		}
-		recordings.get(threadName).recordRequest(target);
-		recordings.get(threadName).setBrowserInstance(browserInstance);
+		recordedClients.get(threadName).recordRequest(target);
+		recordedClients.get(threadName).setBrowserInstance(browserInstance);
 		response.setContentType("text/html;charset=utf-8");
 		if (webPages.containsKey(target)) {
 			response.setStatus(SC_OK);

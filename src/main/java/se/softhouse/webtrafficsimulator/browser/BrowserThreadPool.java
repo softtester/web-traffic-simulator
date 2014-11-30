@@ -1,6 +1,8 @@
 package se.softhouse.webtrafficsimulator.browser;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static java.lang.Thread.sleep;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
@@ -62,6 +64,25 @@ public class BrowserThreadPool {
 			try {
 				sleep(500);
 			} catch (final InterruptedException e) {
+			}
+		}
+	}
+
+	public void waitForThreadsToStop() {
+		while (true) {
+			Boolean isExecuting = FALSE;
+			for (final BrowserThread thread : threads) {
+				if (thread.getState().isExecuting()) {
+					isExecuting = TRUE;
+				}
+			}
+			if (isExecuting) {
+				try {
+					sleep(500);
+				} catch (final InterruptedException e) {
+				}
+			} else {
+				return;
 			}
 		}
 	}

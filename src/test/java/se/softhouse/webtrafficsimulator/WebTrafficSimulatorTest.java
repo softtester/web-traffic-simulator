@@ -32,6 +32,7 @@ public class WebTrafficSimulatorTest {
 	@After
 	public void after() throws Exception {
 		shutdown();
+		getBrowserThreadPool().waitForThreadsToStop();
 		recordingServer.stop();
 	}
 
@@ -52,6 +53,12 @@ public class WebTrafficSimulatorTest {
 		return allTargets.iterator();
 	}
 
+	private void startAndStopThreads() {
+		getBrowserThreadPool().waitForThreadsToStart();
+		shutdown();
+		getBrowserThreadPool().waitForThreadsToStop();
+	}
+
 	@Test
 	public void testThatALinkCanBeRandomlyClicked() throws Exception {
 		recordingServer.withPage("/").havingLinksTo("/target1", "/target2");
@@ -62,7 +69,9 @@ public class WebTrafficSimulatorTest {
 		main(args);
 		// TODO: get rid of this!
 		sleep(1000);
-		assertThat(getAllTargets(recordingServer.getRecordings())).containsOnly("/", "/target1", "/target2");
+		shutdown();
+		getBrowserThreadPool().waitForThreadsToStop();
+		assertThat(getAllTargets(recordingServer.getRecordingClients())).containsOnly("/", "/target1", "/target2");
 	}
 
 	@Test
@@ -70,15 +79,14 @@ public class WebTrafficSimulatorTest {
 		final int threads = 10;
 		final String[] args = { "-url", recordingServer.getBaseUrl(), "-testMode", "true", "-threads", threads + "" };
 		main(args);
-		getBrowserThreadPool().waitForThreadsToStart();
-		shutdown();
-		assertThat(recordingServer.getRecordings()).isNotNull().hasSize(threads);
-		final Iterator<Recordings> itr = recordingServer.getRecordings().values().iterator();
+		startAndStopThreads();
+		assertThat(recordingServer.getRecordingClients()).isNotNull().hasSize(threads);
+		final Iterator<Recordings> itr = recordingServer.getRecordingClients().values().iterator();
 		while (itr.hasNext()) {
 			final Recordings recording = itr.next();
 			assertThat(recording.getTargets()).containsOnlyKeys("/");
 		}
-		final Map<String, Recordings> browsers = uniqueIndex(recordingServer.getRecordings().values(),
+		final Map<String, Recordings> browsers = uniqueIndex(recordingServer.getRecordingClients().values(),
 				(Function<Recordings, String>) input -> input.getBrowserInstance());
 		assertThat(browsers).as(
 				"Expecting " + threads + " browsers to have been used since there are " + threads + " threads")
@@ -89,17 +97,15 @@ public class WebTrafficSimulatorTest {
 	public void testThatURLAndBrowserCanBeSpecifiedOnCommandLine() throws Exception {
 		final String[] args = { "-url", recordingServer.getBaseUrl(), "-browser", BROWSER_HTMLUNIT, "-testMode", "true" };
 		main(args);
-		getBrowserThreadPool().waitForThreadsToStart();
-		shutdown();
-		assertThat(getAllTargets(recordingServer.getRecordings())).containsOnly("/");
+		startAndStopThreads();
+		assertThat(getAllTargets(recordingServer.getRecordingClients())).containsOnly("/");
 	}
 
 	@Test
 	public void testThatURLCanBeSpecifiedOnCommandLine() throws Exception {
 		final String[] args = { "-url", recordingServer.getBaseUrl(), "-testMode", "true" };
 		main(args);
-		getBrowserThreadPool().waitForThreadsToStart();
-		shutdown();
-		assertThat(getAllTargets(recordingServer.getRecordings())).containsOnly("/");
+		startAndStopThreads();
+		assertThat(getAllTargets(recordingServer.getRecordingClients())).containsOnly("/");
 	}
 }

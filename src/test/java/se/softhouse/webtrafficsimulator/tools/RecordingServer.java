@@ -24,8 +24,8 @@ public class RecordingServer {
 		return PORT;
 	}
 
-	public Map<String, Recordings> getRecordings() {
-		return recordingHandler.getRecordings();
+	public Map<String, Recordings> getRecordingClients() {
+		return recordingHandler.getRecordedClients();
 	}
 
 	public void stop() throws Exception {
