@@ -1,6 +1,7 @@
 package se.softhouse.webtrafficsimulator.tools;
 
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static org.assertj.core.util.Maps.newHashMap;
 import static se.softhouse.webtrafficsimulator.browser.BrowserThread.BROWSER_INSTANCE;
 import static se.softhouse.webtrafficsimulator.browser.BrowserThread.THREAD_NAME;
 
@@ -11,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.assertj.core.util.Maps;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class RecordingHandler extends AbstractHandler {
 	private final Logger logger = LoggerFactory.getLogger(RecordingHandler.class);
 
-	private final Map<String, Recordings> recordings = Maps.newHashMap();
+	private final Map<String, Recordings> recordings = newHashMap();
 
 	public Map<String, Recordings> getRecordings() {
 		return recordings;

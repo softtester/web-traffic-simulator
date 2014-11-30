@@ -16,6 +16,10 @@ public class RecordingServer {
 		server.start();
 	}
 
+	public String getBaseUrl() {
+		return "http://localhost:" + getPort() + "/";
+	}
+
 	public Integer getPort() {
 		return PORT;
 	}

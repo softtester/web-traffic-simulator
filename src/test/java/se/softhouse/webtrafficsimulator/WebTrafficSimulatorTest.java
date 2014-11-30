@@ -1,8 +1,8 @@
 package se.softhouse.webtrafficsimulator;
 
+import static com.google.common.collect.Maps.toMap;
 import static com.google.common.collect.Maps.uniqueIndex;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.util.Lists.newArrayList;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -31,16 +31,15 @@ public class WebTrafficSimulatorTest {
 
 	@Test
 	public void testThatThreadsCanBeSpecifiedOnCommandLine() throws Exception {
-		final String url = "http://localhost:" + recordingServer.getPort() + "/testsite";
-		final int threads = 2;
-		final String[] args = { "-url", url, "-testMode", "true", "-threads", threads + "" };
+		final int threads = 10;
+		final String[] args = { "-url", recordingServer.getBaseUrl(), "-testMode", "true", "-threads", threads + "" };
 		WebTrafficSimulator.main(args);
-		assertThat(recordingServer.getRecordings()).isNotNull().hasSize(2);
+		assertThat(recordingServer.getRecordings()).isNotNull().hasSize(threads);
 		final Iterator<Recordings> itr = recordingServer.getRecordings().values().iterator();
 		final Recordings firstRecording = itr.next();
-		assertThat(firstRecording.getTargets()).isEqualTo(newArrayList("/testsite"));
+		assertThat(toMap(firstRecording.getTargets(), (Function<String, String>) it -> it)).containsOnlyKeys("/");
 		final Recordings secondRecording = itr.next();
-		assertThat(secondRecording.getTargets()).isEqualTo(newArrayList("/testsite"));
+		assertThat(toMap(secondRecording.getTargets(), (Function<String, String>) it -> it)).containsOnlyKeys("/");
 		final Map<String, Recordings> browsers = uniqueIndex(recordingServer.getRecordings().values(),
 				(Function<Recordings, String>) input -> input.getBrowserInstance());
 		assertThat(browsers).as(
@@ -50,21 +49,19 @@ public class WebTrafficSimulatorTest {
 
 	@Test
 	public void testThatURLAndBrowserCanBeSpecifiedOnCommandLine() throws Exception {
-		final String url = "http://localhost:" + recordingServer.getPort() + "/testsite";
-		final String[] args = { "-url", url, "-browser", "HtmlUnit", "-testMode", "true" };
+		final String[] args = { "-url", recordingServer.getBaseUrl(), "-browser", "HtmlUnit", "-testMode", "true" };
 		WebTrafficSimulator.main(args);
 		assertThat(recordingServer.getRecordings()).isNotNull().hasSize(1);
 		final Recordings firstRecording = recordingServer.getRecordings().values().iterator().next();
-		assertThat(firstRecording.getTargets()).isEqualTo(newArrayList("/testsite"));
+		assertThat(toMap(firstRecording.getTargets(), (Function<String, String>) it -> it)).containsOnlyKeys("/");
 	}
 
 	@Test
 	public void testThatURLCanBeSpecifiedOnCommandLine() throws Exception {
-		final String url = "http://localhost:" + recordingServer.getPort() + "/testsite";
-		final String[] args = { "-url", url, "-testMode", "true" };
+		final String[] args = { "-url", recordingServer.getBaseUrl(), "-testMode", "true" };
 		WebTrafficSimulator.main(args);
 		assertThat(recordingServer.getRecordings()).isNotNull().hasSize(1);
 		final Recordings firstRecording = recordingServer.getRecordings().values().iterator().next();
-		assertThat(firstRecording.getTargets()).isEqualTo(newArrayList("/testsite"));
+		assertThat(toMap(firstRecording.getTargets(), (Function<String, String>) it -> it)).containsOnlyKeys("/");
 	}
 }
