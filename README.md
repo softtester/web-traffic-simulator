@@ -23,6 +23,15 @@ From now on, only use gradlew.
 
 Import eclipse_formatter.xml and eclipse_codestyle.xml. Use save actions in Eclipse!
 
+## With Chrome
+Get the driver from: http://chromedriver.storage.googleapis.com/index.html?path=2.12/
+
+Run with -browser chrome -Dwebdriver.chrome.driver like this:
+
+```
+java -Dwebdriver.chrome.driver=/path/to/chromedriver -jar build/libs/web-traffic-simulator-0.1-SNAPSHOT.jar -url http://google.com -browser Chrome
+```
+
 #Problems and solutions
 Some problems and solutions.
 

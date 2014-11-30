@@ -10,6 +10,7 @@ import static se.softhouse.webtrafficsimulator.data.Settings.settings;
 import java.net.MalformedURLException;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,13 @@ import se.softhouse.webtrafficsimulator.browser.BrowserThreadPool;
 import se.softhouse.webtrafficsimulator.data.Settings;
 
 public class WebTrafficSimulator {
+	private static final String BROWSER_CHROME = "Chrome";
+	private static final String BROWSER_HTMLUNIT = "HtmlUnit";
 	private static Logger logger = LoggerFactory.getLogger(WebTrafficSimulator.class);
 
 	static Settings loadSettings(String[] args) {
-		final Argument<String> url = stringArgument("-url").build();
-		final Argument<String> browser = stringArgument("-browser").defaultValue("HtmlUnit").build();
+		final Argument<String> url = stringArgument("-url").required().build();
+		final Argument<String> browser = stringArgument("-browser").defaultValue(BROWSER_HTMLUNIT).build();
 		final Argument<Integer> threads = integerArgument("-threads").defaultValue(1).build();
 		final Argument<Integer> sleepBetweenPages = integerArgument("-sleepBetweenPages").defaultValue(500).build();
 		final ParsedArguments parsed = withArguments(url, browser, threads, sleepBetweenPages).parse(args);
@@ -39,20 +42,25 @@ public class WebTrafficSimulator {
 		final Settings settings = loadSettings(args);
 		logger.info("Starting crawler with settings:\n" + settings);
 		WebDriver webDriver = null;
-		if (settings.getBrowser().equals("HtmlUnit")) {
+		switch (settings.getBrowser()) {
+		case BROWSER_HTMLUNIT:
 			webDriver = new HtmlUnitDriver();
+			break;
+		case BROWSER_CHROME:
+			webDriver = new ChromeDriver();
+			break;
 		}
 		if (webDriver == null) {
 			throw new RuntimeException("No browser specified! Use -browser parameter.");
 		}
 		final BrowserThreadPool browserThreadPool = new BrowserThreadPool();
 		browserThreadPool //
-		.withThreads(settings.getThreads()) //
-		.addBrowser(browserThread() //
-				.withWebDriver(webDriver) //
-				.withSettings(settings) //
-				.withState(browserState() //
-						.withUrl(settings.getUrl())));
+				.withThreads(settings.getThreads()) //
+				.addBrowser(browserThread() //
+						.withWebDriver(webDriver) //
+						.withSettings(settings) //
+						.withState(browserState() //
+								.withUrl(settings.getUrl())));
 		browserThreadPool.startAll();
 		browserThreadPool.waitForThreadsToStart();
 		browserThreadPool.stopAll();
