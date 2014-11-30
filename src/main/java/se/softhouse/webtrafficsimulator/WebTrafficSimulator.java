@@ -1,10 +1,13 @@
 package se.softhouse.webtrafficsimulator;
 
+import static java.lang.Boolean.FALSE;
+import static se.softhouse.jargo.Arguments.booleanArgument;
 import static se.softhouse.jargo.Arguments.integerArgument;
 import static se.softhouse.jargo.Arguments.stringArgument;
 import static se.softhouse.jargo.CommandLineParser.withArguments;
 import static se.softhouse.webtrafficsimulator.browser.BrowserState.browserState;
 import static se.softhouse.webtrafficsimulator.browser.BrowserThread.browserThread;
+import static se.softhouse.webtrafficsimulator.browser.BrowserThreadPool.browserThreadPool;
 import static se.softhouse.webtrafficsimulator.data.Settings.settings;
 
 import java.net.MalformedURLException;
@@ -25,22 +28,7 @@ public class WebTrafficSimulator {
 	private static final String BROWSER_HTMLUNIT = "HtmlUnit";
 	private static Logger logger = LoggerFactory.getLogger(WebTrafficSimulator.class);
 
-	static Settings loadSettings(String[] args) {
-		final Argument<String> url = stringArgument("-url").required().build();
-		final Argument<String> browser = stringArgument("-browser").defaultValue(BROWSER_HTMLUNIT).build();
-		final Argument<Integer> threads = integerArgument("-threads").defaultValue(1).build();
-		final Argument<Integer> sleepBetweenPages = integerArgument("-sleepBetweenPages").defaultValue(500).build();
-		final ParsedArguments parsed = withArguments(url, browser, threads, sleepBetweenPages).parse(args);
-		return settings() //
-				.withUrl(parsed.get(url)) //
-				.withBrowser(parsed.get(browser)) //
-				.withThreads(parsed.get(threads)) //
-				.withSleepBetweenPages(parsed.get(sleepBetweenPages));
-	}
-
-	public static void main(String args[]) throws InterruptedException, MalformedURLException {
-		final Settings settings = loadSettings(args);
-		logger.info("Starting crawler with settings:\n" + settings);
+	private static WebDriver getBrowser(final Settings settings) {
 		WebDriver webDriver = null;
 		switch (settings.getBrowser()) {
 		case BROWSER_HTMLUNIT:
@@ -53,14 +41,36 @@ public class WebTrafficSimulator {
 		if (webDriver == null) {
 			throw new RuntimeException("No browser specified! Use -browser parameter.");
 		}
-		final BrowserThreadPool browserThreadPool = new BrowserThreadPool();
-		browserThreadPool //
-				.withThreads(settings.getThreads()) //
-				.addBrowser(browserThread() //
-						.withWebDriver(webDriver) //
-						.withSettings(settings) //
-						.withState(browserState() //
-								.withUrl(settings.getUrl())));
+		return webDriver;
+	}
+
+	static Settings loadSettings(String[] args) {
+		final Argument<String> url = stringArgument("-url").required().build();
+		final Argument<String> browser = stringArgument("-browser").defaultValue(BROWSER_HTMLUNIT).build();
+		final Argument<Integer> threads = integerArgument("-threads").defaultValue(1).build();
+		final Argument<Integer> sleepBetweenPages = integerArgument("-sleepBetweenPages").defaultValue(500).build();
+		final Argument<Boolean> testMode = booleanArgument("-testMode").defaultValue(FALSE).hideFromUsage().build();
+		final ParsedArguments parsed = withArguments(url, browser, threads, sleepBetweenPages, testMode).parse(args);
+		return settings() //
+				.withUrl(parsed.get(url)) //
+				.withBrowser(parsed.get(browser)) //
+				.withThreads(parsed.get(threads)) //
+				.withTestMode(parsed.get(testMode)) //
+				.withSleepBetweenPages(parsed.get(sleepBetweenPages));
+	}
+
+	public static void main(String args[]) throws InterruptedException, MalformedURLException {
+		final Settings settings = loadSettings(args);
+		logger.info("Starting crawler with settings:\n" + settings);
+		BrowserThreadPool browserThreadPool = browserThreadPool() //
+				.withThreads(settings.getThreads());
+		for (int i = 0; i < settings.getThreads(); i++) {
+			browserThreadPool = browserThreadPool.addBrowser(browserThread() //
+					.withWebDriver(getBrowser(settings)) //
+					.withSettings(settings) //
+					.withState(browserState() //
+							.withUrl(settings.getUrl())));
+		}
 		browserThreadPool.startAll();
 		browserThreadPool.waitForThreadsToStart();
 		browserThreadPool.stopAll();

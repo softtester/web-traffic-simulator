@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
 import se.softhouse.webtrafficsimulator.data.Settings;
 
 public class BrowserThread implements Callable<Boolean> {
+	public static final String BROWSER_INSTANCE = "browser_instance";
+
+	public static final String THREAD_NAME = "thread_name";
+
 	public static BrowserThread browserThread() {
 		return new BrowserThread();
 	}
@@ -28,10 +32,28 @@ public class BrowserThread implements Callable<Boolean> {
 	private BrowserThread() {
 	}
 
+	private String appendExtras(String url) {
+		if (!settings.isTestMode()) {
+			return url;
+		}
+		url = appendParam(url, THREAD_NAME, Thread.currentThread().getName());
+		url = appendParam(url, BROWSER_INSTANCE, webDriver.hashCode() + "");
+		return url;
+	}
+
+	private String appendParam(String url, String param, String value) {
+		if (url.contains("?")) {
+			url = url + "&";
+		} else {
+			url = url + "?";
+		}
+		return url += param + "=" + value;
+	}
+
 	@Override
 	public Boolean call() throws Exception {
 		logger.info(currentThread().getName() + " " + this + " Started");
-		webDriver.get(state.getUrl());
+		webDriver.get(appendExtras(state.getUrl()));
 		try {
 			while (state.isStarted()) {
 				state.setExecuting(true);

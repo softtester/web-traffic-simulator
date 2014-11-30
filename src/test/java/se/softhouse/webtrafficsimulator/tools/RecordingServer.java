@@ -1,6 +1,6 @@
 package se.softhouse.webtrafficsimulator.tools;
 
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
 
@@ -20,8 +20,8 @@ public class RecordingServer {
 		return PORT;
 	}
 
-	public List<String> getRequestedUrls() {
-		return recordingHandler.getRequestedUrls();
+	public Map<String, Recordings> getRecordings() {
+		return recordingHandler.getRecordings();
 	}
 
 	public void stop() throws Exception {

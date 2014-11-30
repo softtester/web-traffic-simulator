@@ -8,6 +8,7 @@ public class Settings {
 
 	private String browser;
 	private Integer sleepBetweenPages;
+	private Boolean testMode;
 	private Integer threads;
 	private String url;
 
@@ -30,6 +31,10 @@ public class Settings {
 		return url;
 	}
 
+	public Boolean isTestMode() {
+		return testMode;
+	}
+
 	@Override
 	public String toString() {
 		return "Browser: " + browser + "\n" //
@@ -43,6 +48,11 @@ public class Settings {
 
 	public Settings withSleepBetweenPages(Integer ms) {
 		this.sleepBetweenPages = ms;
+		return this;
+	}
+
+	public Settings withTestMode(Boolean testMode) {
+		this.testMode = testMode;
 		return this;
 	}
 

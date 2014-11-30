@@ -11,11 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BrowserThreadPool {
-	private ExecutorService executor;
 
+	public static BrowserThreadPool browserThreadPool() {
+		return new BrowserThreadPool();
+	}
+
+	private ExecutorService executor;
 	private final Logger logger = LoggerFactory.getLogger(BrowserThreadPool.class);
 
 	private final List<BrowserThread> threads = newArrayList();
+
+	private BrowserThreadPool() {
+	}
 
 	public BrowserThreadPool addBrowser(BrowserThread state) {
 		threads.add(state);
